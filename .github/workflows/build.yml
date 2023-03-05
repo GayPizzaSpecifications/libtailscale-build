@@ -54,7 +54,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-golang-
       - name: Build windows-amd64 library
-        run: GOOS=windows GOARCH=amd64 LIBSUFFIX=dll ./build.sh
+        run: .\build.ps1
+        env:
+          GOOS: windows
+          GOARCH: amd64
+          LIBSUFFIX: dll
+      - name: Build windows-arm64 library
+        run: .\build.ps1
+        env:
+          GOOS: windows
+          GOARCH: arm64
+          LIBSUFFIX: dll
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
