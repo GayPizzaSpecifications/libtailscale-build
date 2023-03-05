@@ -30,7 +30,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: libtailscale-libs
+          name: libtailscale-darwin
           path: build/
           if-no-files-found: error
   linux:
@@ -59,6 +59,12 @@ jobs:
         run: sudo apt-get install -y gcc-aarch64-linux-gnu
       - name: Build linux-arm64 library
         run: CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 LIBSUFFIX=so ./build.sh
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtailscale-linux
+          path: build/
+          if-no-files-found: error
   # windows:
   #   runs-on: windows-latest
   #   steps:
