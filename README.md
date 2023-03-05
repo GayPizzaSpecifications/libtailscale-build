@@ -1,3 +1,3 @@
 # libtailscale builds
 
-Premade builds of libtailscale.
+Prebuilt libraries for libtailscale.
