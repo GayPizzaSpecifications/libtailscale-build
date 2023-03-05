@@ -56,7 +56,7 @@ jobs:
       - name: Build linux-amd64 library
         run: GOOS=linux GOARCH=amd64 LIBSUFFIX=so ./build.sh
       - name: Install aarch64 toolchain
-        run: apt install -y gcc-aarch64-linux-gnu
+        run: sudo apt-get install -y gcc-aarch64-linux-gnu
       - name: Build linux-arm64 library
         run: CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 LIBSUFFIX=so ./build.sh
   # windows:
