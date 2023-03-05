@@ -103,3 +103,25 @@ jobs:
   #         name: libtailscale-libs
   #         path: build/
   #         if-no-files-found: error
+  package:
+    needs:
+    - linux
+    - darwin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download linux libraries
+        uses: actions/download-artifact@v3
+        with:
+          name: libtailscale-linux
+          path: build
+      - name: Download darwin libraries
+        uses: actions/download-artifact@v3
+        with:
+          name: libtailscale-darwin
+          path: build
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtailscale-all
+          path: build/
+          if-no-files-found: error
