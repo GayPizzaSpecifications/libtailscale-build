@@ -1,10 +1,10 @@
-name: Build Libraries
+name: Build libtailscale
 on: [push]
 jobs:
   darwin:
     runs-on: macos-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '>=1.20.1'
-      - name: Setup Go Cache
+      - name: Setup Go cache
         uses: actions/cache@v3
         with:
           path: |
@@ -27,16 +27,22 @@ jobs:
         run: GOOS=darwin GOARCH=arm64 LIBSUFFIX=dylib ./build.sh
       - name: Build darwin-universal library
         run: ./universal.sh darwin-universal darwin-amd64 darwin-arm64
-      - name: Upload Artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: libtailscale-darwin
-          path: build/
+          path: libs/
+          if-no-files-found: error
+      - name: Upload archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtailscale-darwin-archives
+          path: archives/
           if-no-files-found: error
   linux:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -44,7 +50,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: '>=1.20.1'
-      - name: Setup Go Cache
+      - name: Setup Go cache
         uses: actions/cache@v3
         with:
           path: |
@@ -59,16 +65,22 @@ jobs:
         run: sudo apt-get install -y gcc-aarch64-linux-gnu
       - name: Build linux-arm64 library
         run: CC=aarch64-linux-gnu-gcc GOOS=linux GOARCH=arm64 LIBSUFFIX=so ./build.sh
-      - name: Upload Artifacts
+      - name: Upload library artifacts
         uses: actions/upload-artifact@v3
         with:
           name: libtailscale-linux
-          path: build/
+          path: libs/
+          if-no-files-found: error
+      - name: Upload archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtailscale-linux-archives
+          path: archives/
           if-no-files-found: error
   # windows:
   #   runs-on: windows-latest
   #   steps:
-  #     - name: Checkout Repository
+  #     - name: Checkout repository
   #       uses: actions/checkout@v3
   #       with:
   #         submodules: recursive
@@ -76,7 +88,7 @@ jobs:
   #       uses: actions/setup-go@v3
   #       with:
   #         go-version: '>=1.20.1'
-  #     - name: Setup Go Cache
+  #     - name: Setup Go cache
   #       uses: actions/cache@v3
   #       with:
   #         path: |
@@ -97,11 +109,11 @@ jobs:
   #         GOOS: windows
   #         GOARCH: arm64
   #         LIBSUFFIX: dll
-  #     - name: Upload Artifacts
+  #     - name: Upload library artifacts
   #       uses: actions/upload-artifact@v3
   #       with:
   #         name: libtailscale-libs
-  #         path: build/
+  #         path: libs/
   #         if-no-files-found: error
   package:
     needs:
@@ -113,15 +125,31 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: libtailscale-linux
-          path: build
+          path: libs
       - name: Download darwin libraries
         uses: actions/download-artifact@v3
         with:
           name: libtailscale-darwin
-          path: build
-      - name: Upload Artifacts
+          path: libs
+      - name: Download linux archives
+        uses: actions/download-artifact@v3
+        with:
+          name: libtailscale-linux-archives
+          path: archives
+      - name: Download darwin archives
+        uses: actions/download-artifact@v3
+        with:
+          name: libtailscale-darwin-archives
+          path: archives
+      - name: Upload library artifacts
         uses: actions/upload-artifact@v3
         with:
           name: libtailscale-all
-          path: build/
+          path: libs/
+          if-no-files-found: error
+      - name: Upload archives artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libtailscale-all-archives
+          path: archives/
           if-no-files-found: error
